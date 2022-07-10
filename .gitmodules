@@ -1,0 +1,3 @@
+[submodule "game"]
+	path = game
+	url = git@github.com:Phoenix1747/Godot-Horror-Demo-2D.git
