@@ -1,0 +1,57 @@
+target Python {
+    files: libs/eeg.py
+};
+
+preamble {=
+    import eeg
+    import numpy as np
+=}
+
+main reactor {
+    state device(0);
+    state rest_mind(0);
+    state buffer({=[]=});
+
+    initial mode START {
+        reaction(startup) -> reset(CALIBRATION) {=
+            self.device = eeg.EEGDevice()
+            self.device.connect()
+            CALIBRATION.set()
+        =}
+    }
+    mode CALIBRATION {
+        timer calib_loop(0, 5 sec);
+        timer dur(10 sec, 0);
+
+        reaction(calib_loop) {=
+            self.device.extract_data()
+            mindful = self.device.metric()
+            self.buffer.append(mindful)
+        =}
+        reaction(dur) -> reset(MEASURE) {=
+            self.rest_mind = np.mean(self.buffer)
+            self.buffer.clear()
+            MEASURE.set()
+        =}
+    }
+    mode MEASURE {
+        timer main_loop(0, 5 sec);
+        timer dur_main(20 sec, 0);
+
+        reaction(main_loop) {=
+            #plot
+            print(self.rest_mind - self.device.metric());
+        =}
+
+        reaction(dur_main) -> reset(RESULTS) {=
+            RESULTS.set()
+        =}
+
+    }
+    mode RESULTS {
+        reaction(startup) {=
+            print("Done!")
+        =}
+
+    }
+}
