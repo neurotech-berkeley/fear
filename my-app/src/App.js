@@ -73,7 +73,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Neurotech@Berkeley Fall '22 Infosession Demo
+          Neurotech@Berkeley Fall '22 Infosession Demo: EEG Wink
         </p>
         <a
           className="App-link"
@@ -91,3 +91,5 @@ function App() {
 export default App;
 
 main();
+
+
