@@ -32,20 +32,23 @@ function App() {
     try {
       // init connection w headset
       await muse.connect();
+      console.log(muse.connectionStatus)
       // commands headset to start sampling data and sending down wire
       await muse.start();
       eeg_source$ = muse.eegReadings;
+      console.log("STARTED STREAMING FROM", muse.deviceName)
+      console.log("DEVICE INFO", muse.deviceInfo)
     } catch (err) {
       console.error('ERROR: FAILED CONNECTION', err);
     }
     left_wink$ = build_wink(eeg_source$, channelNames.indexOf('AF7'));
     left_wink$.subscribe((value) => {
-      console.log('left wink', value);
+      console.log(muse.connectionStatus, '; left wink', value);
     });
 
     right_wink$ = build_wink(eeg_source$, channelNames.indexOf('AF8'));
     right_wink$.subscribe((value) => {
-      console.log('right wink', value);
+      console.log(muse.connectionStatus, ';right wink', value);
     });
     // DEBUG
     /**
@@ -67,13 +70,13 @@ function App() {
           href="https://neurotech.berkeley.edu/"
           target="_blank"
           rel="noopener noreferrer"
-        >
+          >
           Neurotech Website
         </a>
-      </header>
-      <button onClick={main}>
-        Connect!
-      </button>
+        <button onClick={main}>
+          Connect!
+        </button>
+        </header>
     </div>
   );
 }

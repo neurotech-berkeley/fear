@@ -25,6 +25,38 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+
+    <script src="plotly.min.js"></script>
+      <div class="wrapper">
+        <div id="eeg"></div>
+        <script>
+          function getEEGData() {
+            return Math.random();
+          }
+          Plotly.plot("eeg",[{
+            y:[App.js.getEEGData()],
+            type:"line"
+          }]);
+          
+          var count = 0
+
+          // automatically get next datapoint and update chart
+          setInterval(function(){
+            // extend current chart w new set of datapoints
+            Plotly.extendTraces("eeg", {y:[[getEEGData()]]}, [0]);
+            count++;
+
+            if (count > 300) {
+              Plotly.relayout('chart', ( {
+                  xaxis: {
+                    range: [count-300, count]
+                  }
+                });
+              )
+            }
+          }, 15);
+      </div>
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
